@@ -1,0 +1,50 @@
+{
+  "nodes": [
+    {
+      "id": "node-1",
+      "type": "text",
+      "text": "# Basalto 🚀\nSistema de notas e pensamento visual.",
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 140,
+      "color": "1"
+    },
+    {
+      "id": "node-2",
+      "type": "file",
+      "file": "Boas-vindas.md",
+      "x": 420,
+      "y": -80,
+      "width": 300,
+      "height": 180
+    },
+    {
+      "id": "node-3",
+      "type": "file",
+      "file": "Ideias.md",
+      "x": 420,
+      "y": 140,
+      "width": 300,
+      "height": 180
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "fromNode": "node-1",
+      "fromSide": "right",
+      "toNode": "node-2",
+      "toSide": "left",
+      "label": "Documentação"
+    },
+    {
+      "id": "edge-2",
+      "fromNode": "node-1",
+      "fromSide": "right",
+      "toNode": "node-3",
+      "toSide": "left",
+      "label": "Conexões"
+    }
+  ]
+}

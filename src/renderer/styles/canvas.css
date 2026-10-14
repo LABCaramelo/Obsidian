@@ -1,0 +1,427 @@
+/* ---------- Canvas (.canvas files) ---------- */
+
+body.theme-dark {
+  --canvas-background: #1b1b1b;
+  --canvas-dot: rgba(255, 255, 255, 0.09);
+  --canvas-card-bg: #262626;
+  --canvas-edge: #8a8a8a;
+}
+body.theme-light {
+  --canvas-background: #f7f7f8;
+  --canvas-dot: rgba(0, 0, 0, 0.12);
+  --canvas-card-bg: #ffffff;
+  --canvas-edge: #9a9aa2;
+}
+
+.canvas-view {
+  overflow: hidden;
+}
+
+.canvas-wrapper {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  outline: none;
+  touch-action: none;
+  user-select: none;
+  background-color: var(--canvas-background);
+  background-image: radial-gradient(circle, var(--canvas-dot) 1px, transparent 1.2px);
+  cursor: default;
+}
+.canvas-wrapper.is-zoomed-out {
+  background-image: none;
+}
+.canvas-wrapper.is-panning-ready,
+.canvas-wrapper.is-panning-ready * {
+  cursor: grab !important;
+}
+.canvas-wrapper.is-panning,
+.canvas-wrapper.is-panning * {
+  cursor: grabbing !important;
+}
+
+.canvas-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+}
+.canvas-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.canvas-edges {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Nodes */
+.canvas-node {
+  position: absolute;
+  --canvas-color: var(--text-faint);
+}
+.canvas-node-container {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-m);
+  border: 2px solid var(--background-modifier-border);
+  background: var(--canvas-card-bg);
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+.canvas-node.is-colored .canvas-node-container {
+  border-color: var(--canvas-color);
+  background: color-mix(in srgb, var(--canvas-color) 9%, var(--canvas-card-bg));
+}
+.canvas-node.is-selected .canvas-node-container,
+.canvas-node.is-editing .canvas-node-container {
+  box-shadow: 0 0 0 2px var(--interactive-accent), 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+.canvas-node.is-connect-target .canvas-node-container {
+  box-shadow: 0 0 0 3px var(--accent-soft), 0 0 0 2px var(--interactive-accent);
+}
+.canvas-node-content {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  padding: 10px 16px;
+}
+.canvas-node.is-selected .canvas-node-content.markdown-rendered,
+.canvas-node-file .canvas-node-content.markdown-rendered {
+  overflow-y: auto;
+}
+.canvas-node-content.markdown-rendered {
+  font-size: calc(var(--font-text-size) * 0.95);
+  user-select: none;
+}
+.canvas-node.is-selected .canvas-node-content.markdown-rendered {
+  user-select: text;
+}
+.canvas-node-content.markdown-rendered > :first-child {
+  margin-top: 0;
+}
+.canvas-node-content.markdown-rendered > :last-child {
+  margin-bottom: 0;
+}
+.canvas-node-content.is-editing {
+  padding: 4px 6px;
+  overflow: hidden;
+  user-select: text;
+  cursor: text;
+}
+.canvas-node-content.is-editing .cm-editor {
+  height: 100%;
+  font-size: calc(var(--font-text-size) * 0.95);
+}
+.canvas-node-content.is-editing .cm-scroller {
+  overflow: auto;
+}
+.canvas-node-content.is-editing .cm-gutters {
+  display: none;
+}
+.canvas-node-file .canvas-node-content {
+  padding: 10px 18px;
+}
+.canvas-node-file .canvas-node-content:has(> .canvas-media),
+.canvas-node-file .canvas-node-content:has(> audio) {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.canvas-media {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border: 0;
+  display: block;
+}
+.canvas-node-content audio {
+  width: calc(100% - 20px);
+}
+.canvas-node-missing {
+  color: var(--text-error);
+  font-size: var(--font-ui-small);
+}
+.canvas-node-file-card,
+.canvas-link-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--text-muted);
+  text-align: center;
+  overflow: hidden;
+}
+.canvas-link-host {
+  font-size: 1.15em;
+  font-weight: 600;
+  color: var(--text-normal);
+}
+.canvas-link-url {
+  font-size: var(--font-ui-smaller);
+  word-break: break-all;
+  max-width: 100%;
+}
+
+.canvas-node-label {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  max-width: 100%;
+  padding: 0 4px 4px;
+  font-size: var(--font-ui-small);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+.canvas-node-label:empty {
+  display: none;
+}
+
+/* Groups */
+.canvas-node-group .canvas-node-container {
+  background: color-mix(in srgb, var(--canvas-color) 7%, transparent);
+  border-color: color-mix(in srgb, var(--canvas-color) 55%, transparent);
+  box-shadow: none;
+}
+.canvas-node-group.is-colored .canvas-node-container {
+  background: color-mix(in srgb, var(--canvas-color) 12%, transparent);
+}
+.canvas-node-group[data-bg-style] .canvas-node-container {
+  background-image: var(--canvas-bg);
+  background-size: cover;
+  background-position: center;
+}
+.canvas-node-group[data-bg-style='ratio'] .canvas-node-container {
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.canvas-node-group[data-bg-style='repeat'] .canvas-node-container {
+  background-size: auto;
+  background-repeat: repeat;
+}
+.canvas-node-group .canvas-node-label {
+  font-size: 1.15em;
+  font-weight: 600;
+  color: var(--text-normal);
+  background: color-mix(in srgb, var(--canvas-color) 25%, var(--canvas-card-bg));
+  border-radius: var(--radius-s) var(--radius-s) 0 0;
+  padding: 3px 10px;
+  pointer-events: auto;
+}
+
+/* Resize handle & connection points */
+.canvas-node-resizer {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  border-radius: 3px;
+  display: none;
+}
+.canvas-node.is-selected .canvas-node-resizer {
+  display: block;
+  background: var(--interactive-accent);
+  border: 2px solid var(--background-primary);
+}
+.canvas-node-connection-point {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--background-primary);
+  border: 2px solid var(--interactive-accent);
+  opacity: 0;
+  transition: opacity 0.12s;
+  cursor: crosshair;
+  z-index: 2;
+}
+.canvas-node:hover > .canvas-node-connection-point,
+.canvas-node.is-selected > .canvas-node-connection-point {
+  opacity: 1;
+}
+.canvas-node.is-editing > .canvas-node-connection-point {
+  opacity: 0;
+  pointer-events: none;
+}
+.canvas-node-connection-point.side-top {
+  left: calc(50% - 7px);
+  top: -7px;
+}
+.canvas-node-connection-point.side-bottom {
+  left: calc(50% - 7px);
+  bottom: -7px;
+}
+.canvas-node-connection-point.side-left {
+  top: calc(50% - 7px);
+  left: -7px;
+}
+.canvas-node-connection-point.side-right {
+  top: calc(50% - 7px);
+  right: -7px;
+}
+
+/* Edges */
+.canvas-edge {
+  --canvas-color: var(--canvas-edge);
+}
+.canvas-edge-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 16px;
+  pointer-events: stroke;
+  cursor: pointer;
+}
+.canvas-edge-line {
+  fill: none;
+  stroke: var(--canvas-color);
+  stroke-width: 3px;
+  stroke-linecap: round;
+}
+.canvas-edge-arrow {
+  fill: var(--canvas-color);
+  stroke: none;
+}
+.canvas-edge.is-selected .canvas-edge-line {
+  stroke: var(--interactive-accent);
+  stroke-width: 4px;
+}
+.canvas-edge.is-selected .canvas-edge-arrow {
+  fill: var(--interactive-accent);
+}
+.canvas-edge.is-temporary .canvas-edge-line {
+  stroke: var(--interactive-accent);
+  stroke-dasharray: 8 6;
+}
+.canvas-edge.is-temporary .canvas-edge-arrow {
+  fill: var(--interactive-accent);
+}
+.canvas-edge-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 2px 8px;
+  border-radius: var(--radius-s);
+  background: var(--canvas-background);
+  color: var(--text-normal);
+  font-size: var(--font-ui-small);
+  white-space: pre;
+  cursor: pointer;
+}
+.canvas-edge-label.is-selected {
+  outline: 2px solid var(--interactive-accent);
+}
+
+/* Overlays */
+.canvas-selection-box {
+  position: absolute;
+  border: 1px solid var(--interactive-accent);
+  background: var(--accent-soft);
+  pointer-events: none;
+  z-index: 5;
+}
+.canvas-empty-hint {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  color: var(--text-faint);
+  font-size: var(--font-ui-small);
+  pointer-events: none;
+  text-align: center;
+  max-width: 320px;
+}
+.canvas-menu,
+.canvas-control-group,
+.canvas-card-menu,
+.canvas-color-picker {
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow);
+}
+.canvas-menu {
+  position: absolute;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  z-index: 10;
+}
+.canvas-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+.canvas-control-group {
+  display: flex;
+  flex-direction: column;
+  padding: 3px;
+  gap: 2px;
+}
+.canvas-card-menu {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  z-index: 10;
+}
+.canvas-card-menu-item {
+  background: none;
+  border: none;
+  padding: 7px 12px;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+}
+.canvas-card-menu-item:hover {
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+.canvas-color-picker {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  z-index: 11;
+}
+.canvas-color-swatch {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid var(--background-modifier-border);
+}
+.canvas-color-swatch:hover {
+  transform: scale(1.12);
+}
+.canvas-color-swatch.is-none {
+  background: linear-gradient(135deg, transparent 45%, var(--text-error) 46%, var(--text-error) 54%, transparent 55%), var(--background-primary);
+}
+.canvas-color-picker input[type='color'] {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}

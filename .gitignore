@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.basalto/
+**/.basalto/
+.trash/
+**/.trash/
+*.log
+.DS_Store
+Thumbs.db

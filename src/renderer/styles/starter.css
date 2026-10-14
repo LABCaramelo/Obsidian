@@ -1,0 +1,138 @@
+@import './base.css';
+
+body.starter {
+  user-select: none;
+}
+
+.starter-container {
+  display: flex;
+  height: 100vh;
+}
+
+.starter-left {
+  width: 290px;
+  background: var(--background-secondary);
+  border-right: 1px solid var(--background-modifier-border);
+  overflow-y: auto;
+  padding: 12px 8px;
+}
+
+.recent-vaults-empty {
+  color: var(--text-faint);
+  padding: 12px;
+}
+
+.recent-vault {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+}
+.recent-vault:hover {
+  background: var(--background-modifier-hover);
+}
+.recent-vault-text {
+  flex: 1;
+  min-width: 0;
+}
+.recent-vault-name {
+  font-weight: 600;
+  color: var(--text-normal);
+}
+.recent-vault-path {
+  font-size: var(--font-ui-smaller);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recent-vault-remove {
+  visibility: hidden;
+}
+.recent-vault:hover .recent-vault-remove {
+  visibility: visible;
+}
+
+.starter-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 40px;
+  gap: 20px;
+}
+
+.starter-brand {
+  text-align: center;
+}
+.starter-logo {
+  color: var(--interactive-accent);
+}
+.starter-app-name {
+  font-size: 26px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+.starter-version {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+.starter-actions {
+  display: flex;
+  flex-direction: column;
+}
+.starter-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--background-modifier-border);
+}
+.starter-action-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+.starter-action-desc {
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.create-vault {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.create-vault-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.create-vault-row > span {
+  width: 50px;
+  color: var(--text-muted);
+}
+.create-vault-row input {
+  flex: 1;
+}
+.create-vault-parent {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+.create-vault-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.starter-status {
+  color: var(--text-error);
+  min-height: 18px;
+}

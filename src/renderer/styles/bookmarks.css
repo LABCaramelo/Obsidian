@@ -1,0 +1,7 @@
+.bookmarks-tree { min-height: 140px; padding-bottom: 24px; }
+.bookmark-row { outline-offset: -2px; user-select: none; }
+.bookmark-row:focus-visible { outline: 2px solid var(--interactive-accent); }
+.bookmark-row.is-missing { opacity: .6; }
+.bookmark-row.is-missing .tree-item-inner { text-decoration: line-through; }
+.bookmark-children { border-left: 1px solid var(--background-modifier-border); margin-left: 14px; }
+.bookmarks-tree.is-drop-target, .bookmark-children.is-drop-target { background: var(--background-modifier-hover); outline: 1px dashed var(--interactive-accent); }
